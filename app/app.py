@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 # showcase for importing functions from another .py file (in this case from "./app/getGeoDataFrame.py")
 from app.getGeoDataFrame import get_GDF
 
+from app.config import ConfigDto
 
 class App(object):
 
@@ -15,17 +16,18 @@ class App(object):
 
     @hook_impl
     def execute(self, data: TrajectoryCollection, config: dict) -> TrajectoryCollection:
-
+        config = ConfigDto(config)
         logging.info(f'Welcome to the {config}')
 
         """Your app code goes here"""
 
         # showcase injecting App settings (parameter `year`)
         data_gdf = get_GDF(data)  # translate the TrajectoryCollection to a GeoDataFrame
-        logging.info(f'Subsetting data for {config["year"]}')
+        logging.info(f'Subsetting data for {config.year}')
+
         # subset the data to only contain the specified year
-        if config["year"] in data_gdf.index.year:
-            result = data_gdf[data_gdf.index.year == config["year"]]
+        if config.year in data_gdf.index.year:
+            result = data_gdf[data_gdf.index.year == config.year]
         else:
             result = None
 

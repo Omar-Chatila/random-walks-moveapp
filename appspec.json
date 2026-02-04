@@ -1,68 +1,136 @@
 {
-  "version": "1.2",
-  "settings": [
-    {
-      "id": "app-name",
-      "name": "App Name",
-      "description": "You can personalize the app name.",
-      "default": "Python SDK",
-      "type": "STRING"
-    },
-    {
-      "id": "year",
-      "name": "The year",
-      "description": "Enter the year for which you want to keep the data",
-      "defaultValue": 1960,
-      "type": "INTEGER"
-    },
-    {
-      "id": "auxiliary-file-a",
-      "name": "Your message",
-      "description": "You can personalize the app by providing a file.",
-      "type": "USER_FILE"
-    }
-  ],
-  "providedAppFiles": [
-    {
-      "settingId": "auxiliary-file-a",
-      "from": "resources/auxiliary/user-files/provided-app-files/auxiliary-file-a/sample.txt"
-    }
-  ],
+  "version": "1.0",
+
   "license": {
     "key": "MIT"
   },
+
+  "documentation": {
+    "url": "https://github.com/Omar-Chatila/random-walks-moveapp/blob/main/README.md"
+  },
+
   "language": "eng",
-  "keywords": [
-    "example",
-    "template"
-  ],
+
   "people": [
     {
-      "firstName": "Charles",
+      "firstName": "Omar",
       "middleInitials": null,
-      "lastName": "Darwin",
-      "email": "creator@example.com",
+      "lastName": "Chatila",
+      "email": "omar.chatila@tu-dortmund.de",
       "roles": [
         "author",
         "creator"
       ],
       "orcid": null,
-      "affiliation": null,
+      "affiliation": "TU Dortmund",
       "affiliationRor": null
     }
   ],
-  "funding": [
-    {
-      "name": "funder name",
-      "comment": "grant for App"
-    }
+
+  "keywords": [
+    "movement",
+    "random-walk",
+    "state-dependent",
+    "trajectory",
+    "animal-movement"
   ],
-  "references": [
+
+  "settings": [
     {
-      "type": "IsDescribedBy",
-      "note": "Darwin, C. 1900. The creation. Journal XY. 1-2",
-      "url": "https://anylink.xyz"
+      "id": "animal_type",
+      "name": "Animal Type",
+      "description": "Primary movement mode of the animal. This affects how terrain and water are treated during walk generation.",
+      "defaultValue": "TERRESTRIAL",
+      "type": "RADIOBUTTONS",
+      "options": [
+        { "value": 0, "displayText": "Airborne (Birds, Flying Animals)" },
+        { "value": 1, "displayText": "Terrestrial" },
+        { "value": 2, "displayText": "Marine" }
+      ]
+    },
+
+    {
+      "id": "water_mode",
+      "name": "Behaviour Towards Water (Terrestrial)",
+      "description": "Defines how water bodies are treated for TERRESTRIAL animals. Ignored for AIRBORNE and MARINE animals (water is treated like normal terrain).",
+      "defaultValue": 2,
+      "type": "RADIOBUTTONS",
+      "options": [
+        {
+          "value": 0,
+          "displayText": "Avoids water completely (cannot cross water bodies)"
+        },
+        {
+          "value": 1,
+          "displayText": "Avoids water whenever possible, but allows starting or isolated points in water"
+        },
+        {
+          "value": 2,
+          "displayText": "Water is treated like any other terrain (can cross)"
+        }
+      ]
+    },
+
+    {
+      "id": "grid_resolution",
+      "name": "Walk Unit Length (metres)",
+      "description": "Defines the smallest possible step length used in the generated walks. This value represents the fundamental unit length of the walk.",
+      "defaultValue": 350,
+      "type": "INTEGER"
+    },
+
+    {
+      "id": "movement_policy",
+      "name": "Movement Policy",
+      "description": "Defines how the number of steps and step timing are determined.",
+      "defaultValue": "TIME_STEP",
+      "type": "RADIOBUTTONS",
+      "options": [
+        {
+          "value": "TIME_STEP",
+          "displayText": "Fixed time step"
+        },
+        {
+          "value": "FIXED_STEPS",
+          "displayText": "Fixed number of steps"
+        },
+        {
+          "value": "AUTO_SPEED",
+          "displayText": "Automatic (based on reference speed)"
+        }
+      ]
+    },
+
+    {
+      "id": "time_step_seconds",
+      "name": "Time Step (seconds)",
+      "description": "Time difference between consecutive steps. Only used if Movement Policy is set to 'Fixed time step'.",
+      "defaultValue": 180,
+      "type": "INTEGER"
+    },
+
+    {
+      "id": "num_steps",
+      "name": "Number of Steps",
+      "description": "Total number of steps generated per trajectory. Only used if Movement Policy is set to 'Fixed number of steps'.",
+      "defaultValue": 10,
+      "type": "INTEGER"
+    },
+
+    {
+      "id": "reference_speed",
+      "name": "Reference Speed (m/s)",
+      "description": "Typical movement speed of the animal used to automatically determine step count and timing. Only used if Movement Policy is set to 'Automatic (based on reference speed)'.",
+      "defaultValue": 1.0,
+      "type": "DOUBLE"
+    },
+
+    {
+      "id": "dt_tolerance",
+      "name": "Delta-T Tolerance Factor",
+      "description": "Threshold to decide whether two records belong to the same trajectory. A value of 2.0 allows deviations up to twice the median Δt.",
+      "defaultValue": 2.0,
+      "type": "DOUBLE"
     }
   ]
 }
-

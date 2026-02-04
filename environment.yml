@@ -3,9 +3,12 @@ channels:
   - conda-forge
 dependencies:
   - python=3.11
+  - pip
   - pandas
   - geopandas
   - movingpandas
   - pluggy
   - python-dotenv
   - deprecated
+  - pip:
+        - "git+https://github.com/ls11ae/random-walks-python.git@main#submodules=true"

@@ -1,4 +1,16 @@
 {
-  "app-name": "MoveApps Python SDK",
-  "year": 2014
+  "animal_type": "TERRESTRIAL",
+  "water_mode": 2,
+
+  "grid_resolution": 350,
+
+  "movement_policy": "TIME_STEP",
+  "time_step_seconds": 180,
+
+  "num_steps": 10,
+  "reference_speed": 1.2,
+
+  "dt_tolerance": 2.0,
+
+   "year": 2014
 }

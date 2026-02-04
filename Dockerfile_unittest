@@ -1,17 +1,32 @@
 FROM condaforge/miniforge3:latest
+
 LABEL org.opencontainers.image.authors="us@couchbits.com"
 LABEL org.opencontainers.image.vendor="couchbits GmbH"
 
 ENV PROJECT_DIR /moveapps-python-sdk
 ENV ENV_PREFIX=${PROJECT_DIR}/conda
 
-# the app
 WORKDIR $PROJECT_DIR
-COPY sdk.py environment.yml ./
+
+# Copy environment file and SDK
+COPY environment.yml sdk.py ./
 COPY sdk/ ./sdk/
 COPY resources/ ./resources/
 COPY tests/ ./tests/
 COPY app/ ./app/
+
+# install C compiler
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gcc \
+    g++ \
+    cmake \
+    ninja-build \
+    && rm -rf /var/lib/apt/lists/*
+
+ENV CC=/usr/bin/gcc
+ENV CXX=/usr/bin/g++
+
 RUN conda env create --prefix ${ENV_PREFIX}  --file environment.yml && \
     conda clean --all --yes
 
