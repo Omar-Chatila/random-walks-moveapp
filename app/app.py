@@ -4,10 +4,11 @@ from movingpandas import TrajectoryCollection
 import logging
 import matplotlib.pyplot as plt
 
+from random_walk_package import StateDependentWalker, TimeStepPolicy, SpeedBasedPolicy
 # showcase for importing functions from another .py file (in this case from "./app/getGeoDataFrame.py")
 from app.getGeoDataFrame import get_GDF
 
-from app.config import ConfigDto
+from app.config import ConfigDto, MovementPolicy
 
 class App(object):
 
@@ -19,17 +20,25 @@ class App(object):
         config = ConfigDto(config)
         logging.info(f'Welcome to the {config}')
 
-        """Your app code goes here"""
+        walker = StateDependentWalker(data=data,
+                                      animal_type=config.animal_type,
+                                      resolution=config.grid_resolution,
+                                      out_directory="resources")
 
-        # showcase injecting App settings (parameter `year`)
-        data_gdf = get_GDF(data)  # translate the TrajectoryCollection to a GeoDataFrame
-        logging.info(f'Subsetting data for {config.year}')
-
-        # subset the data to only contain the specified year
-        if config.year in data_gdf.index.year:
-            result = data_gdf[data_gdf.index.year == config.year]
+        mvm_pol = TimeStepPolicy(config.time_step_seconds)
+        if config.movement_policy == MovementPolicy.TIME_STEP:
+            mvm_pol = TimeStepPolicy(config.time_step_seconds)
+        elif config.movement_policy == MovementPolicy.FIXED_STEPS:
+            mvm_pol = TimeStepPolicy(config.num_steps)
         else:
-            result = None
+            mvm_pol = SpeedBasedPolicy(config.time_step_seconds,
+                                       config.reference_speed,
+                                       config.grid_resolution)
+
+        result = walker.generate_walks(dt_tolerance=config.dt_tolerance, rnge=1000, movement_policy=mvm_pol)
+
+
+        #logging.info(f'Subsetting data for {config.year}')
 
         # showcase creating an artifact
         if result is not None:

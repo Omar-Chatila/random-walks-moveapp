@@ -40,7 +40,7 @@
       "id": "animal_type",
       "name": "Animal Type",
       "description": "Primary movement mode of the animal. This affects how terrain and water are treated during walk generation.",
-      "defaultValue": "TERRESTRIAL",
+      "defaultValue": 1,
       "type": "RADIOBUTTONS",
       "options": [
         { "value": 0, "displayText": "Airborne (Birds, Flying Animals)" },

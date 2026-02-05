@@ -26,7 +26,7 @@ class ConfigDto(BaseModel):
     def __init__(self, config: dict):
         super().__init__()
         self.__config = config
-        self.__animal_type: AnimalType = config.get("animal_type", AnimalType.AIRBORNE)
+        self.__animal_type: int = int(config.get("animal_type", AnimalType.AIRBORNE))
         self.__water_mode: WaterMode = config.get("water_mode", WaterMode.FORBID)
         self.__grid_resolution: int = config.get("grid_resolution", 350)
         self.__movement_policy: MovementPolicy = config.get("movement_policy", MovementPolicy.TIME_STEP)
@@ -37,7 +37,7 @@ class ConfigDto(BaseModel):
         self.__year = config.get("year", 2014)
 
     @property
-    def animal_type(self) -> AnimalType:
+    def animal_type(self) -> int:
         return self.__animal_type
 
     @property

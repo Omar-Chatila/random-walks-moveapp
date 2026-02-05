@@ -10,5 +10,7 @@ dependencies:
   - pluggy
   - python-dotenv
   - deprecated
-  - pip:
-        - "git+https://github.com/ls11ae/random-walks-python.git@main#submodules=true"
+
+  # only for release
+  #- pip:
+  #     - "git+https://github.com/ls11ae/random-walks-python.git@state-walks#submodules=true"

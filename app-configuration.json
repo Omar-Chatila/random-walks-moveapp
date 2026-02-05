@@ -1,5 +1,5 @@
 {
-  "animal_type": "TERRESTRIAL",
+  "animal_type": 0,
   "water_mode": 2,
 
   "grid_resolution": 350,
