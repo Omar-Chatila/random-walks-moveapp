@@ -21,7 +21,7 @@
         "author",
         "creator"
       ],
-      "orcid": "https://orcid.org/0000-0002-3022-7877",
+      "orcid": null,
       "affiliation": "TU Dortmund",
       "affiliationRor": null
     },
@@ -45,7 +45,7 @@
       "roles": [
         "author"
       ],
-      "orcid": null,
+      "orcid": "https://orcid.org/0000-0002-3022-7877",
       "affiliation": "TU Dortmund",
       "affiliationRor": null
     }
