@@ -12,5 +12,5 @@ dependencies:
   - deprecated
 
   # only for release
-  #- pip:
-  #     - "git+https://github.com/ls11ae/random-walks-python.git@state-walks#submodules=true"
+  - pip:
+       - "git+https://github.com/ls11ae/random-walks-python.git@state-walks#submodules=true"

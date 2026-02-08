@@ -2,7 +2,8 @@
   "animal_type": 0,
   "water_mode": 2,
 
-  "grid_resolution": 350,
+  "cell_resolution": 50,
+  "grid_resolution": 600,
 
   "movement_policy": "TIME_STEP",
   "time_step_seconds": 180,
@@ -11,6 +12,11 @@
   "reference_speed": 1.2,
 
   "dt_tolerance": 2.0,
+
+  "hmm_states": 3,
+  "rnge": 500,
+
+  "walk_model": 1,
 
    "year": 2014
 }

@@ -1,16 +1,12 @@
 {
   "version": "1.0",
-
   "license": {
     "key": "MIT"
   },
-
   "documentation": {
     "url": "https://github.com/Omar-Chatila/random-walks-moveapp/blob/main/README.md"
   },
-
   "language": "eng",
-
   "people": [
     {
       "firstName": "Omar",
@@ -26,7 +22,6 @@
       "affiliationRor": null
     }
   ],
-
   "keywords": [
     "movement",
     "random-walk",
@@ -34,7 +29,6 @@
     "trajectory",
     "animal-movement"
   ],
-
   "settings": [
     {
       "id": "animal_type",
@@ -43,12 +37,20 @@
       "defaultValue": 1,
       "type": "RADIOBUTTONS",
       "options": [
-        { "value": 0, "displayText": "Airborne (Birds, Flying Animals)" },
-        { "value": 1, "displayText": "Terrestrial" },
-        { "value": 2, "displayText": "Marine" }
+        {
+          "value": 0,
+          "displayText": "Airborne (Birds, Flying Animals)"
+        },
+        {
+          "value": 1,
+          "displayText": "Terrestrial"
+        },
+        {
+          "value": 2,
+          "displayText": "Marine"
+        }
       ]
     },
-
     {
       "id": "water_mode",
       "name": "Behaviour Towards Water (Terrestrial)",
@@ -70,15 +72,20 @@
         }
       ]
     },
-
     {
-      "id": "grid_resolution",
-      "name": "Walk Unit Length (metres)",
-      "description": "Defines the smallest possible step length used in the generated walks. This value represents the fundamental unit length of the walk.",
-      "defaultValue": 350,
+      "id": "cell_resolution",
+      "name": "Upper Bound for Walk Unit Length (metres)",
+      "description": "Defines the upper bound for smallest possible step length used in the generated walks. This value represents the maximal unit length of the walk.",
+      "defaultValue": 50,
       "type": "INTEGER"
     },
-
+    {
+      "id": "grid_resolution",
+      "name": "Number of Grid-Cells Along the Longer Axis",
+      "description": "Defines the fallback resolution in case two points are too far away to respect the unit length settings. (E.g. 1000: if two consecutive points are 100 km apart for a cell resolution of 10 m and BBOX aspect-ratio of 4:3, a resolution of 1000x750 is taken instead of 10000x7500). Value between 300 and 1000",
+      "defaultValue": 500,
+      "type": "INTEGER"
+    },
     {
       "id": "movement_policy",
       "name": "Movement Policy",
@@ -100,7 +107,6 @@
         }
       ]
     },
-
     {
       "id": "time_step_seconds",
       "name": "Time Step (seconds)",
@@ -108,7 +114,6 @@
       "defaultValue": 180,
       "type": "INTEGER"
     },
-
     {
       "id": "num_steps",
       "name": "Number of Steps",
@@ -116,21 +121,68 @@
       "defaultValue": 10,
       "type": "INTEGER"
     },
-
     {
       "id": "reference_speed",
       "name": "Reference Speed (m/s)",
       "description": "Typical movement speed of the animal used to automatically determine step count and timing. Only used if Movement Policy is set to 'Automatic (based on reference speed)'.",
-      "defaultValue": 1.0,
+      "defaultValue": 1,
       "type": "DOUBLE"
     },
-
     {
       "id": "dt_tolerance",
       "name": "Delta-T Tolerance Factor",
       "description": "Threshold to decide whether two records belong to the same trajectory. A value of 2.0 allows deviations up to twice the median Δt.",
-      "defaultValue": 2.0,
+      "defaultValue": 2,
       "type": "DOUBLE"
+    },
+    {
+      "id": "hmm_states",
+      "name": "Maximal Number of Hidden-Markov-Model states ",
+      "description": "Desired number of states (e,g, 0=Resting, 1=Foraging, 2=Travelling). Depending on the study, not all of the three states occur (enough) to generate transition matrices",
+      "defaultValue": 3,
+      "type": "DROPDOWN",
+      "options": [
+        {
+          "value": 2,
+          "displayText": "2"
+        },
+        {
+          "value": 3,
+          "displayText": "3"
+        },
+        {
+          "value": 4,
+          "displayText": "4"
+        }
+      ]
+    },
+    {
+      "id": "rnge",
+      "name": "HMM-Kernels Range",
+      "description": "Transition matrices are generated with dimensions [-range, range] x [-range, range]",
+      "defaultValue": 300,
+      "type": "INTEGER"
+    },
+    {
+      "id": "walk_model",
+      "name": "Random Walk Motion Model (Temporary Option)",
+      "description": "Third option has default settings: Correlated for Aearial and Marine, Brownian for Terrestrial.",
+      "defaultValue": 1,
+      "type": "RADIOBUTTONS",
+      "options": [
+        {
+          "value": 1,
+          "displayText": "Brownian"
+        },
+        {
+          "value": 2,
+          "displayText": "Correlated"
+        },
+        {
+          "value": 3,
+          "displayText": "Animal Type Dependent"
+        }
+      ]
     }
   ]
 }

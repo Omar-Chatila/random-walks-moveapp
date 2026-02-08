@@ -4,11 +4,11 @@ from movingpandas import TrajectoryCollection
 import logging
 import matplotlib.pyplot as plt
 
-from random_walk_package import StateDependentWalker, TimeStepPolicy, SpeedBasedPolicy
-# showcase for importing functions from another .py file (in this case from "./app/getGeoDataFrame.py")
-from app.getGeoDataFrame import get_GDF
+from random_walk_package import StateDependentWalker
 
-from app.config import ConfigDto, MovementPolicy
+# showcase for importing functions from another .py file (in this case from "./app/getGeoDataFrame.py")
+
+from app.config import ConfigDto
 
 class App(object):
 
@@ -17,26 +17,25 @@ class App(object):
 
     @hook_impl
     def execute(self, data: TrajectoryCollection, config: dict) -> TrajectoryCollection:
-        config = ConfigDto(config)
+        config:ConfigDto = ConfigDto(config)
         logging.info(f'Welcome to the {config}')
 
+        output_dir = self.moveapps_io.get_artifacts_dir()
+
         walker = StateDependentWalker(data=data,
-                                      animal_type=config.animal_type,
-                                      resolution=config.grid_resolution,
-                                      out_directory="resources")
+                                    animal_type=config.animal_type, 
+                                    resolution=config.grid_resolution,
+                                    out_directory=output_dir, 
+                                    n_hmm_states=config.hmm_states)
 
-        mvm_pol = TimeStepPolicy(config.time_step_seconds)
-        if config.movement_policy == MovementPolicy.TIME_STEP:
-            mvm_pol = TimeStepPolicy(config.time_step_seconds)
-        elif config.movement_policy == MovementPolicy.FIXED_STEPS:
-            mvm_pol = TimeStepPolicy(config.num_steps)
-        else:
-            mvm_pol = SpeedBasedPolicy(config.time_step_seconds,
-                                       config.reference_speed,
-                                       config.grid_resolution)
-
-        result = walker.generate_walks(dt_tolerance=config.dt_tolerance, rnge=1000, movement_policy=mvm_pol)
-
+        result = walker.generate_walks(out_dir=output_dir,
+                                      dt_tolerance=config.dt_tolerance, 
+                                      rnge=config.rnge, 
+                                      movement_policy=config.movement_policy, 
+                                      max_cell_size=config.cell_resolution, 
+                                      water_mode=config.water_mode,
+                                      is_brownian=config.walk_model)
+        
 
         #logging.info(f'Subsetting data for {config.year}')
 
