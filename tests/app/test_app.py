@@ -93,6 +93,45 @@ class MyTestCase(unittest.TestCase):
         result = self.sut.execute(data=data, config=config)
         assert result is not None
 
+    def test_terrestrial_run_mollweide(self):
+        # prepare
+        data: mpd.TrajectoryCollection = pd.read_pickle(os.path.join(ROOT_DIR, 'tests/resources/app/input1_Mollweide.pickle'))
+        print(data.to_point_gdf().head())
+        short_trajs = []
+
+        for traj in data:
+            short_df = traj.df.iloc[:20].copy()
+            short_traj = mpd.Trajectory(short_df, traj.id)
+            short_trajs.append(short_traj)
+
+        data = mpd.TrajectoryCollection(short_trajs)
+
+        config: dict = {
+            "animal_type": 1,
+            "water_mode": 1,
+
+            "cell_resolution": 50,
+            "grid_resolution": 300,
+
+            "movement_policy": "TIME_STEP",
+            "time_step_seconds": 300,
+
+            "num_steps": 10,
+            "reference_speed": 1.2,
+
+            "dt_tolerance": 4.0,
+
+            "hmm_states": 2,
+            "rnge": 200,
+
+            "walk_model": 1,
+            }
+
+
+        # execute
+        result = self.sut.execute(data=data, config=config)
+        assert result is not None
+
     def test_app_config(self):
         # prepare
         config: dict = {
