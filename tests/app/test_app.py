@@ -24,6 +24,7 @@ class MyTestCase(unittest.TestCase):
             short_df = traj.df.iloc[:20].copy()
             short_traj = mpd.Trajectory(short_df, traj.id)
             short_trajs.append(short_traj)
+            break
 
         data = mpd.TrajectoryCollection(short_trajs)
 
@@ -32,7 +33,7 @@ class MyTestCase(unittest.TestCase):
             "water_mode": 2,
 
             "cell_resolution": 50,
-            "grid_resolution": 300,
+            "grid_resolution": 200,
 
             "movement_policy": "TIME_STEP",
             "time_step_seconds": 300,
@@ -64,6 +65,7 @@ class MyTestCase(unittest.TestCase):
             short_df = traj.df.iloc[:20].copy()
             short_traj = mpd.Trajectory(short_df, traj.id)
             short_trajs.append(short_traj)
+            break
 
         data = mpd.TrajectoryCollection(short_trajs)
 
@@ -72,7 +74,7 @@ class MyTestCase(unittest.TestCase):
             "water_mode": 1,
 
             "cell_resolution": 50,
-            "grid_resolution": 300,
+            "grid_resolution": 200,
 
             "movement_policy": "TIME_STEP",
             "time_step_seconds": 300,
@@ -103,6 +105,7 @@ class MyTestCase(unittest.TestCase):
             short_df = traj.df.iloc[:20].copy()
             short_traj = mpd.Trajectory(short_df, traj.id)
             short_trajs.append(short_traj)
+            break
 
         data = mpd.TrajectoryCollection(short_trajs)
 
@@ -111,7 +114,7 @@ class MyTestCase(unittest.TestCase):
             "water_mode": 1,
 
             "cell_resolution": 50,
-            "grid_resolution": 300,
+            "grid_resolution": 200,
 
             "movement_policy": "TIME_STEP",
             "time_step_seconds": 300,

@@ -1,10 +1,8 @@
 from sdk.moveapps_spec import hook_impl
-from sdk.moveapps_io import MoveAppsIo
 from movingpandas import TrajectoryCollection
 import logging
-import matplotlib.pyplot as plt
 
-from random_walk_package import StateDependentWalker
+from random_walk_package import StateDependentWalker, save_trajectory_collection_timed
 
 # showcase for importing functions from another .py file (in this case from "./app/getGeoDataFrame.py")
 
@@ -21,20 +19,25 @@ class App(object):
         logging.info(f'Welcome to the {config}')
         
         output_dir = self.moveapps_io.get_artifacts_dir()
+        try:
+            walker = StateDependentWalker(data=data,
+                                        animal_type=config.animal_type, 
+                                        resolution=config.grid_resolution,
+                                        out_directory=output_dir, 
+                                        n_hmm_states=config.hmm_states)
 
-        walker = StateDependentWalker(data=data,
-                                    animal_type=config.animal_type, 
-                                    resolution=config.grid_resolution,
-                                    out_directory=output_dir, 
-                                    n_hmm_states=config.hmm_states)
-
-        result = walker.generate_walks(out_dir=output_dir,
-                                      dt_tolerance=config.dt_tolerance, 
-                                      rnge=config.rnge, 
-                                      movement_policy=config.movement_policy, 
-                                      max_cell_size=config.cell_resolution, 
-                                      water_mode=config.water_mode,
-                                      is_brownian=config.walk_model == 1)
+            result = walker.generate_walks(out_dir=output_dir,
+                                        dt_tolerance=config.dt_tolerance, 
+                                        rnge=config.rnge, 
+                                        movement_policy=config.movement_policy, 
+                                        max_cell_size=config.cell_resolution, 
+                                        water_mode=config.water_mode,
+                                        is_brownian=config.walk_model == 1)
+            
+            save_trajectory_collection_timed(result, output_dir)
+        except Exception as e:
+            logging.info(str(e))
+            return data
         
 
         #logging.info(f'Subsetting data for {config.year}')

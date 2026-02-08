@@ -6,6 +6,10 @@
   "documentation": {
     "url": "https://github.com/Omar-Chatila/random-walks-moveapp/blob/main/README.md"
   },
+  
+  "reference": {
+    "url": "https://dl.acm.org/doi/10.1145/3678717.3691231"
+  },
   "language": "eng",
   "people": [
     {
@@ -16,6 +20,30 @@
       "roles": [
         "author",
         "creator"
+      ],
+      "orcid": "https://orcid.org/0000-0002-3022-7877",
+      "affiliation": "TU Dortmund",
+      "affiliationRor": null
+    },
+    {
+      "firstName": "Mart",
+      "middleInitials": null,
+      "lastName": "Hagedoorn",
+      "email": "mart.hagedoorn@tu-dortmund.de",
+      "roles": [
+        "author"
+      ],
+      "orcid": "https://orcid.org/0000-0002-8591-3380",
+      "affiliation": "TU Dortmund",
+      "affiliationRor": null
+    },
+    {
+      "firstName": "Kevin",
+      "middleInitials": null,
+      "lastName": "Buchin",
+      "email": "kevin.buchin@tu-dortmund.de",
+      "roles": [
+        "author"
       ],
       "orcid": null,
       "affiliation": "TU Dortmund",
