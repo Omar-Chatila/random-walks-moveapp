@@ -1,6 +1,8 @@
-# Random Walks
+# Random Walks MoveApp
 
-MoveApps
+Tiger Shark around Hawaii   |  Boar in Austria
+:-------------------------:|:-------------------------:
+<img width="1191" height="682" alt="image" src="https://github.com/user-attachments/assets/e0817c58-500f-4b40-bc9c-4a1d1c140843" /> | <img width="756" height="617" alt="image" src="https://github.com/user-attachments/assets/bc4370fa-c5a1-48da-822a-47d1c7d604d9" />
 
 Github repository: *[https://github.com/Omar-Chatila/random-walks-moveapp.git](https://github.com/Omar-Chatila/random-walks-moveapp.git)*
 
