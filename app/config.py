@@ -49,9 +49,9 @@ class ConfigDto(BaseModel):
     @property
     def movement_policy(self) -> MovementPolicy:
         mvm_pol = TimeStepPolicy(self.time_step_seconds)
-        if self.__movement_policy == MovementPolicy.TIME_STEP:
+        if self.__movement_policy == MovementPolicyCfg.TIME_STEP:
             mvm_pol = TimeStepPolicy(self.time_step_seconds)
-        elif self.__movement_policy == MovementPolicy.FIXED_STEPS:
+        elif self.__movement_policy == MovementPolicyCfg.FIXED_STEPS:
             mvm_pol = TimeStepPolicy(self.num_steps)
         else:
             mvm_pol = SpeedBasedPolicy(self.time_step_seconds,
