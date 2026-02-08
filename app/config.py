@@ -11,8 +11,8 @@ from pydantic import BaseModel
 class ConfigDto(BaseModel):
     def __init__(self, config: dict):
         super().__init__()
-        self.__animal_type: int = int(config.get("animal_type", Animal.AIRBORNE))
-        self.__water_mode: WaterMode = config.get("water_mode", WaterMode.FORBID)
+        self.__animal_type: int = config.get("animal_type", 0)
+        self.__water_mode: int = config.get("water_mode", 1)
 
         self.__cell_resolution: int = config.get("cell_resolution", 50)
         self.__grid_resolution: int = config.get("grid_resolution", 350)
@@ -28,15 +28,24 @@ class ConfigDto(BaseModel):
         self.__rnge: Optional[int] = config.get("rnge", 500)
 
         self.__walk_model: Optional[int] = config.get("walk_model", 1) 
-        self.__year = config.get("year", 2014)
 
     @property
-    def animal_type(self) -> int:
-        return self.__animal_type
+    def animal_type(self) -> Animal:
+        if self.__animal_type == 0:
+            return Animal.AIRBORNE
+        elif self.__animal_type == 1:
+            return Animal.TERRESTRIAL
+        else:
+            return Animal.MARINE
 
     @property
     def water_mode(self) -> WaterMode:
-        return self.__water_mode
+        if self.__water_mode == 0:
+            return WaterMode.FORBID
+        elif self.__water_mode == 1:
+            return WaterMode.AVOID
+        else:
+            return WaterMode.ALLOW
 
     @property
     def cell_resolution(self) -> int:
@@ -86,8 +95,3 @@ class ConfigDto(BaseModel):
     @property
     def walk_model(self) -> Optional[int]:
         return self.__walk_model
-
-    @property
-    def year(self) -> int:
-        return self.__year
-

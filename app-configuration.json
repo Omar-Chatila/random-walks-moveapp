@@ -16,7 +16,5 @@
   "hmm_states": 3,
   "rnge": 500,
 
-  "walk_model": 1,
-
-   "year": 2014
+  "walk_model": 1
 }

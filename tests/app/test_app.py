@@ -2,6 +2,7 @@ import unittest
 import os
 from tests.config.definitions import ROOT_DIR
 from app.app import App
+from app.config import *
 from sdk.moveapps_io import MoveAppsIo
 import pandas as pd
 import movingpandas as mpd
@@ -13,113 +14,119 @@ class MyTestCase(unittest.TestCase):
         os.environ['APP_ARTIFACTS_DIR'] = os.path.join(ROOT_DIR, 'tests/resources/output')
         self.sut = App(moveapps_io=MoveAppsIo())
 
-    def test_app_runs(self):
+    def test_bird_run(self):
         # prepare
         data: mpd.TrajectoryCollection = pd.read_pickle(os.path.join(ROOT_DIR, 'tests/resources/app/input4_LatLon.pickle'))
+        print(data.to_point_gdf().head())
+        short_trajs = []
+
+        for traj in data:
+            short_df = traj.df.iloc[:20].copy()
+            short_traj = mpd.Trajectory(short_df, traj.id)
+            short_trajs.append(short_traj)
+
+        data = mpd.TrajectoryCollection(short_trajs)
+
         config: dict = {
-            "year": 2014
-        }
+            "animal_type": 0,
+            "water_mode": 2,
+
+            "cell_resolution": 50,
+            "grid_resolution": 300,
+
+            "movement_policy": "TIME_STEP",
+            "time_step_seconds": 300,
+
+            "num_steps": 10,
+            "reference_speed": 1.2,
+
+            "dt_tolerance": 4.0,
+
+            "hmm_states": 3,
+            "rnge": 700,
+
+            "walk_model": 2,
+            }
+
 
         # execute
-        self.sut.execute(data=data, config=config)
+        result = self.sut.execute(data=data, config=config)
+        assert result is not None
+
+
+    def test_terrestrial_run(self):
+        # prepare
+        data: mpd.TrajectoryCollection = pd.read_pickle(os.path.join(ROOT_DIR, 'tests/resources/app/input1_LatLon.pickle'))
+        print(data.to_point_gdf().head())
+        short_trajs = []
+
+        for traj in data:
+            short_df = traj.df.iloc[:20].copy()
+            short_traj = mpd.Trajectory(short_df, traj.id)
+            short_trajs.append(short_traj)
+
+        data = mpd.TrajectoryCollection(short_trajs)
+
+        config: dict = {
+            "animal_type": 1,
+            "water_mode": 1,
+
+            "cell_resolution": 50,
+            "grid_resolution": 300,
+
+            "movement_policy": "TIME_STEP",
+            "time_step_seconds": 300,
+
+            "num_steps": 10,
+            "reference_speed": 1.2,
+
+            "dt_tolerance": 4.0,
+
+            "hmm_states": 2,
+            "rnge": 200,
+
+            "walk_model": 1,
+            }
+
+
+        # execute
+        result = self.sut.execute(data=data, config=config)
+        assert result is not None
 
     def test_app_config(self):
         # prepare
-        config = {
-            "year": 2014
-        }
+        config: dict = {
+            "animal_type": 0,
+            "water_mode": 2,
+
+            "cell_resolution": 50,
+            "grid_resolution": 300,
+
+            "movement_policy": "TIME_STEP",
+            "time_step_seconds": 300,
+
+            "num_steps": 10,
+            "reference_speed": 1.2,
+
+            "dt_tolerance": 4.0,
+
+            "hmm_states": 2,
+            "rnge": 700,
+
+            "walk_model": 2,
+            }
 
         # execute
         actual = config
 
         # verify
-        self.assertEqual(2014, actual["year"])
+        self.assertEqual(0, actual["animal_type"])
+        self.assertEqual(2, actual["water_mode"])
+        self.assertEqual(50, actual["cell_resolution"])
+        self.assertEqual("TIME_STEP", actual["movement_policy"])
 
-    def test_year_present(self):
-        # prepare input data
-        df = pd.DataFrame([
-            {'timestamp_utc': "2001-06-11 09:00:00", 'coords_x': 1, 'coords_y': 5, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2001-07-12 09:00:00", 'coords_x': 2, 'coords_y': 4, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2002-08-13 09:00:00", 'coords_x': 3, 'coords_y': 3, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2002-09-14 09:00:00", 'coords_x': 4, 'coords_y': 2, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2002-10-15 09:00:00", 'coords_x': 5, 'coords_y': 1, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2000-06-11 09:00:00", 'coords_x': 1, 'coords_y': 5, 'track_id': 'ID_2'},
-            {'timestamp_utc': "2000-07-12 09:00:00", 'coords_x': 2, 'coords_y': 4, 'track_id': 'ID_2'},
-            {'timestamp_utc': "2001-08-13 09:00:00", 'coords_x': 3, 'coords_y': 3, 'track_id': 'ID_2'},
-            {'timestamp_utc': "2001-09-14 09:00:00", 'coords_x': 4, 'coords_y': 2, 'track_id': 'ID_2'},
-            {'timestamp_utc': "2001-10-15 09:00:00", 'coords_x': 5, 'coords_y': 1, 'track_id': 'ID_2'}
-        ])
-        input = mpd.TrajectoryCollection(
-            df,
-            traj_id_col='track_id',
-            t='timestamp_utc',
-            crs='epsg:4326',
-            x='coords_x', y='coords_y'
-        )
 
-        # prepare configuration
-        config = {
-            "year": 2001
-        }
-
-        # prepare expected data
-        df_e = pd.DataFrame([
-            {'timestamp_utc': "2001-06-11 09:00:00", 'coords_x': 1, 'coords_y': 5, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2001-07-12 09:00:00", 'coords_x': 2, 'coords_y': 4, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2001-08-13 09:00:00", 'coords_x': 3, 'coords_y': 3, 'track_id': 'ID_2'},
-            {'timestamp_utc': "2001-09-14 09:00:00", 'coords_x': 4, 'coords_y': 2, 'track_id': 'ID_2'},
-            {'timestamp_utc': "2001-10-15 09:00:00", 'coords_x': 5, 'coords_y': 1, 'track_id': 'ID_2'}
-        ])
-        expected = mpd.TrajectoryCollection(
-            df_e,
-            traj_id_col='track_id',
-            t='timestamp_utc',
-            crs='epsg:4326',
-            x='coords_x', y='coords_y'
-        )
-
-        # execute
-        actual = self.sut.execute(data=input, config=config)
-
-        # verify timestamps
-        self.assertEqual(actual.to_point_gdf().index.strftime("%Y-%m-%d %H:%M:%S").tolist(),expected.to_point_gdf().index.strftime("%Y-%m-%d %H:%M:%S").tolist())
-
-        # verify track ids
-        self.assertEqual(actual.to_point_gdf()[actual.get_traj_id_col()].unique().tolist(), expected.to_point_gdf()[expected.get_traj_id_col()].unique().tolist())
-
-    def test_year_not_present(self):
-        # prepare input data
-        df = pd.DataFrame([
-            {'timestamp_utc': "2001-06-11 09:00:00", 'coords_x': 1, 'coords_y': 5, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2001-07-12 09:00:00", 'coords_x': 2, 'coords_y': 4, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2002-08-13 09:00:00", 'coords_x': 3, 'coords_y': 3, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2002-09-14 09:00:00", 'coords_x': 4, 'coords_y': 2, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2002-10-15 09:00:00", 'coords_x': 5, 'coords_y': 1, 'track_id': 'ID_1'},
-            {'timestamp_utc': "2000-06-11 09:00:00", 'coords_x': 1, 'coords_y': 5, 'track_id': 'ID_2'},
-            {'timestamp_utc': "2000-07-12 09:00:00", 'coords_x': 2, 'coords_y': 4, 'track_id': 'ID_2'},
-            {'timestamp_utc': "2001-08-13 09:00:00", 'coords_x': 3, 'coords_y': 3, 'track_id': 'ID_2'},
-            {'timestamp_utc': "2001-09-14 09:00:00", 'coords_x': 4, 'coords_y': 2, 'track_id': 'ID_2'},
-            {'timestamp_utc': "2001-10-15 09:00:00", 'coords_x': 5, 'coords_y': 1, 'track_id': 'ID_2'}
-        ])
-        input = mpd.TrajectoryCollection(
-            df,
-            traj_id_col='track_id',
-            t='timestamp_utc',
-            crs='epsg:4326',
-            x='coords_x', y='coords_y'
-        )
-
-        # prepare configuration
-        config = {
-            "year": 2100
-        }
-
-        # execute
-        actual = self.sut.execute(data=input, config=config)
-
-        # verify
-        self.assertIsNone(actual)
-
+    
     """
     # Use this test if the App should return the input data
     def test_app_returns_input(self):
