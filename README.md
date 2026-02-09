@@ -1,12 +1,51 @@
 # Random Walks MoveApp
 
-Tiger Shark around Hawaii   |  Boar in Austria
+This MoveApp provides a ready-to-use application of the
+**state-dependent random walk model** for animal movement simulation
+as described in the reference paper below.
+
+---
+
+## Example Outputs
+
+Tiger Shark around Hawaii   |  Wild Boar in Austria
 :-------------------------:|:-------------------------:
-<img width="1191" height="682" alt="image" src="https://github.com/user-attachments/assets/e0817c58-500f-4b40-bc9c-4a1d1c140843" /> | <img width="756" height="617" alt="image" src="https://github.com/user-attachments/assets/bc4370fa-c5a1-48da-822a-47d1c7d604d9" />
+<img width="1191" height="682" src="https://github.com/user-attachments/assets/e0817c58-500f-4b40-bc9c-4a1d1c140843" /> | <img width="756" height="617" src="https://github.com/user-attachments/assets/bc4370fa-c5a1-48da-822a-47d1c7d604d9" />
 
-Github repository: *[https://github.com/Omar-Chatila/random-walks-moveapp.git](https://github.com/Omar-Chatila/random-walks-moveapp.git)*
+---
 
-Reference paper: https://dl.acm.org/doi/10.1145/3678717.3691231
+## Scientific Background
+
+This app is based on the following publication:
+
+> **State-Dependent Random Walks for Realistic Animal Movement Simulation**  
+> *ACM SIGSPATIAL 2024*  
+> https://dl.acm.org/doi/10.1145/3678717.3691231
+
+---
+
+## Base Implementation (Algorithm Package)
+
+The core algorithm and model implementation is provided by the
+**Random Walks Python package**, which implements the methods described
+in the paper:
+
+🔗 **Random Walks – Core Python Implementation (Backend in C)**  
+https://github.com/ls11ae/random-walks-python/tree/state-walks
+
+This MoveApp acts as a **wrapper and integration layer** for MoveApps,
+handling input/output, configuration, and execution within the
+MoveApps ecosystem.
+
+---
+
+## MoveApp Repository
+
+The MoveApps-specific implementation (this repository):
+
+🔗 https://github.com/Omar-Chatila/random-walks-moveapp
+
+---
 
 ## Description
 
