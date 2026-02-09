@@ -4,13 +4,24 @@ channels:
 dependencies:
   - python=3.11
   - pip
+
   - pandas
   - geopandas
   - movingpandas
+  - rasterio
+  - rioxarray
+  - pyproj
+  - shapely
+  - gdal
+
+  - qt-main
+  - pyqt6
+  - compilers
+  - cmake
   - pluggy
   - python-dotenv
   - deprecated
 
   # only for release
   - pip:
-       - "git+https://github.com/ls11ae/random-walks-python.git@state-walks#submodules=true"
+    - "git+https://github.com/ls11ae/random-walks-python.git@ad875d46fb973e217a1b7f92e8df0eed14a5604b#submodules=true"
