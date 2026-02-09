@@ -1,6 +1,8 @@
+import os
+import logging
+
 from sdk.moveapps_spec import hook_impl
 from movingpandas import TrajectoryCollection
-import logging
 
 from random_walk_package import StateDependentWalker, save_trajectory_collection_timed
 
@@ -18,7 +20,7 @@ class App(object):
         config:ConfigDto = ConfigDto(config)
         logging.info(f'Welcome to the {config}')
         
-        output_dir = self.moveapps_io.get_artifacts_dir()
+        output_dir = os.environ.get('APP_ARTIFACTS_DIR', './resources/output')
         try:
             walker = StateDependentWalker(data=data,
                                         animal_type=config.animal_type, 

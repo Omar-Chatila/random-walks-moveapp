@@ -119,11 +119,6 @@ class MoveAppsIo:
         return None
 
     @staticmethod
-    def get_artifacts_dir() -> str:
-        app_artifacts_dir = os.environ.get('APP_ARTIFACTS_DIR', './resources/output')
-        return app_artifacts_dir
-
-    @staticmethod
     def create_artifacts_file(artifact_file_name: str) -> str:
         """
         Provides the path to an app-artifact.
