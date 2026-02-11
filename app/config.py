@@ -2,7 +2,7 @@ from optparse import Option
 from typing import Optional
 from enum import Enum
 
-from random_walk_package import Animal, MovementPolicyCfg, SpeedBasedPolicy, TimeStepPolicy, WaterMode, MovementPolicy
+from random_walk_package import Animal, MovementPolicyCfg, SpeedBasedPolicy, FixedStepsPolicy, TimeStepPolicy, WaterMode, MovementPolicy
 
 
 from pydantic import BaseModel
@@ -61,7 +61,7 @@ class ConfigDto(BaseModel):
         if self.__movement_policy == MovementPolicyCfg.TIME_STEP:
             mvm_pol = TimeStepPolicy(self.time_step_seconds)
         elif self.__movement_policy == MovementPolicyCfg.FIXED_STEPS:
-            mvm_pol = TimeStepPolicy(self.num_steps)
+            mvm_pol = FixedStepsPolicy(self.num_steps)
         else:
             mvm_pol = SpeedBasedPolicy(self.time_step_seconds,
                                        self.reference_speed,

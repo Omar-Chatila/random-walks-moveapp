@@ -18,7 +18,7 @@ Tiger Shark around Hawaii   |  Wild Boar in Austria
 
 This app is based on the following publication:
 
-> **State-Dependent Random Walks for Realistic Animal Movement Simulation**  
+> **Discretized Random Walk Models for Efficient Movement Interpolation**  
 > *ACM SIGSPATIAL 2024*  
 > https://dl.acm.org/doi/10.1145/3678717.3691231
 
@@ -111,8 +111,12 @@ The output contains the original points plus interpolated random-walk points bet
 
 ### Artefacts
 
+`kernels.png`
+Plots of the kernels produced by the HMM and Gaussian Mixture Model.
+
 `trajectories_timed.html`
 Leaflet visualization showing animated, time-aware random walk trajectories for each individual.
+
 
 ### Settings
 
@@ -132,7 +136,7 @@ Fallback grid resolution when two points are very far apart. Limits memory and r
 **Movement Policy (`movement_policy`)**
 Defines how number of steps and step sizes are determined:
 
-* **Fixed time step**: step sizes are calculated using distance and calculated number of steps
+* **Fixed time step**: step sizes are calculated using distance and calculated number of steps from the fixed rate in seconds
 * **Fixed number of** steps: step sizes are calculated using distance and fixed number of steps
 * **Automatic based on** reference speed: Uses reference speed and Euclidean Distance to calculate step sizes and number of steps 
 
