@@ -17,7 +17,7 @@ class App(object):
         config:ConfigDto = ConfigDto(config)
         logging.info(f'Welcome to the {config}')
 
-        output_dir = os.environ.get('APP_ARTIFACTS_DIR', './resources/output')
+        output_dir = self.moveapps_io.create_artifacts_file("kernels.png");
         tmp_dir = os.environ.get('APP_ARTIFACTS_DIR', './resources/auxiliary')
         try:
             walker = StateDependentWalker(data=data,
