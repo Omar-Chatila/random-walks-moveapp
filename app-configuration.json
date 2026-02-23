@@ -1,9 +1,9 @@
 {
-  "animal_type": 0,
-  "water_mode": 2,
+  "animal_type": 1,
+  "water_mode": 0,
 
-  "cell_resolution": 50,
-  "grid_resolution": 600,
+  "cell_resolution": 5,
+  "grid_resolution": 150,
 
   "movement_policy": "TIME_STEP",
   "time_step_seconds": 180,
@@ -11,10 +11,10 @@
   "num_steps": 10,
   "reference_speed": 1.2,
 
-  "dt_tolerance": 2.0,
+  "dt_tolerance": 1000.0,
 
-  "hmm_states": 3,
-  "rnge": 500,
+  "hmm_states": 2,
+  "rnge": 50,
 
-  "walk_model": 1
+  "walk_model": 2
 }

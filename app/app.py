@@ -17,7 +17,11 @@ class App(object):
         config:ConfigDto = ConfigDto(config)
         logging.info(f'Welcome to the {config}')
 
-        output_dir = self.moveapps_io.create_artifacts_file("kernels.png");
+        successful = True
+
+        kernels_dir = self.moveapps_io.create_artifacts_file("kernels2.png");
+        visualization_dir = self.moveapps_io.create_artifacts_file("");
+
         tmp_dir = os.environ.get('APP_ARTIFACTS_DIR', './resources/auxiliary')
         try:
             walker = StateDependentWalker(data=data,
@@ -26,7 +30,7 @@ class App(object):
                                         out_directory=tmp_dir,
                                         n_hmm_states=config.hmm_states)
 
-            result = walker.generate_walks(out_dir=output_dir,
+            result = walker.generate_walks(out_dir=kernels_dir,
                                         dt_tolerance=config.dt_tolerance, 
                                         rnge=config.rnge, 
                                         movement_policy=config.movement_policy, 
@@ -35,10 +39,11 @@ class App(object):
                                         is_brownian=config.walk_model == 1)
 
             # save artifact: animated trajectories
-            save_trajectory_collection_timed(result, output_dir)
+            save_trajectory_collection_timed(result, visualization_dir)
         except Exception as e:
+            successful = False
             logging.info(str(e))
             return data
-
+        logging.info(f"Successful execution\n")
         # return the resulting data for next Apps in the Workflow
         return result
