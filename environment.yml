@@ -24,4 +24,4 @@ dependencies:
 
   # only for release
   - pip:
-    - "git+https://github.com/ls11ae/random-walks-python.git@511b4352b05371bea1b7e288a9238c530c2e9d1e#submodules=true"
+    - "git+https://github.com/ls11ae/random-walks-python.git@71daeca4df74b2d0ae0eec9e7795844a534b5a8f#submodules=true"

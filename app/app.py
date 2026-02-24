@@ -20,7 +20,7 @@ class App(object):
         successful = True
 
         kernels_dir = self.moveapps_io.create_artifacts_file("kernels2.png");
-        visualization_dir = self.moveapps_io.create_artifacts_file("");
+        visualization_dir = self.moveapps_io.create_artifacts_file("animated_trajectories.html");
 
         tmp_dir = os.environ.get('APP_ARTIFACTS_DIR', './resources/auxiliary')
         try:
