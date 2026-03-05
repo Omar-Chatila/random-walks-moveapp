@@ -1,5 +1,6 @@
 import os
 import logging
+import tempfile
 
 from sdk.moveapps_spec import hook_impl
 from movingpandas import TrajectoryCollection
@@ -19,31 +20,34 @@ class App(object):
 
         successful = True
 
-        kernels_dir = self.moveapps_io.create_artifacts_file("kernels2.png");
+        kernels_dir = self.moveapps_io.create_artifacts_file("kernels.png");
         visualization_dir = self.moveapps_io.create_artifacts_file("animated_trajectories.html");
 
-        tmp_dir = os.environ.get('APP_ARTIFACTS_DIR', './resources/auxiliary')
-        try:
-            walker = StateDependentWalker(data=data,
-                                        animal_type=config.animal_type, 
-                                        resolution=config.grid_resolution,
-                                        out_directory=tmp_dir,
-                                        n_hmm_states=config.hmm_states)
+        result = data
+        with tempfile.TemporaryDirectory(dir=".") as tmp_dir:
+            try:
+                walker = StateDependentWalker(data=data,
+                                            animal_type=config.animal_type, 
+                                            resolution=config.grid_resolution,
+                                            out_directory=str(tmp_dir),
+                                            n_hmm_states=config.hmm_states)
 
-            result = walker.generate_walks(out_dir=kernels_dir,
-                                        dt_tolerance=config.dt_tolerance, 
-                                        rnge=config.rnge, 
-                                        movement_policy=config.movement_policy, 
-                                        max_cell_size=config.cell_resolution, 
-                                        water_mode=config.water_mode,
-                                        is_brownian=config.walk_model == 1)
+                result = walker.generate_walks(out_dir=kernels_dir,
+                                            dt_tolerance=config.dt_tolerance, 
+                                            rnge=config.rnge, 
+                                            movement_policy=config.movement_policy, 
+                                            max_cell_size=config.cell_resolution, 
+                                            water_mode=config.water_mode,
+                                            is_brownian=config.walk_model == 1)
 
-            # save artifact: animated trajectories
-            save_trajectory_collection_timed(result, visualization_dir)
-        except Exception as e:
-            successful = False
-            logging.info(str(e))
-            return data
-        logging.info(f"Successful execution\n")
+                # save artifact: animated trajectories
+                save_trajectory_collection_timed(result, visualization_dir)
+            except Exception as e:
+                successful = False
+                logging.info(str(e))
+                logging.info(f"Execution failed, returning input\n")
+                
+            logging.info(f"Successful execution\n")
+
         # return the resulting data for next Apps in the Workflow
         return result

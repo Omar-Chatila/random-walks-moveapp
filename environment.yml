@@ -22,6 +22,5 @@ dependencies:
   - python-dotenv
   - deprecated
 
-  # only for release
   - pip:
-    - "git+https://github.com/ls11ae/random-walks-python.git@47073df1eb1f33c3ce6b4da9fe8696c59dfaea8a#submodules=true"
+    - "git+https://github.com/ls11ae/random-walks-python.git@state-walks#submodules=true"
