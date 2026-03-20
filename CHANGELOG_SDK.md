@@ -13,4 +13,6 @@
 - add fixed-step movement policy
 - improve handling of lower and upper bounds for spatial and temporal walk parameters
 - improve kernel clipping, resampling and grid-based kernel generation
-- add debug export of resampled kernels as PNG
+
+## 2026-03-20 `v1.1.1`
+- resolve issues with flying animals with regard to S, T and kernel resampling
