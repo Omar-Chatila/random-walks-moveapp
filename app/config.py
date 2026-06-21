@@ -1,9 +1,7 @@
-from optparse import Option
 from typing import Optional
-from enum import Enum
 
-from random_walk_package import Animal, MovementPolicyCfg, SpeedBasedPolicy, FixedStepsPolicy, TimeStepPolicy, WaterMode, MovementPolicy
-
+from randomwalks.bindings.data_structures.Terrain import Animal, BarrierMode, MesaLandcover, MovementPolicyCfg
+from randomwalks.core.MovementPolicy import FixedStepsPolicy, MovementPolicy, SpeedBasedPolicy, TimeStepPolicy
 
 from pydantic import BaseModel
 
@@ -11,15 +9,17 @@ from pydantic import BaseModel
 class ConfigDto(BaseModel):
     def __init__(self, config: dict):
         super().__init__()
-        self.__animal_type: int = config.get("animal_type", 0)
-        self.__water_mode: int = config.get("water_mode", 1)
+        self.__animal_type: int = int(config.get("animal_type", 0))
+        self.__water_mode: int = int(config.get("water_mode", BarrierMode.AVOID))
 
-        self.__cell_resolution: int = config.get("cell_resolution", 50)
-        self.__grid_resolution: int = config.get("grid_resolution", 350)
+        self.__cell_resolution: int = int(config.get("cell_resolution", 50))
+        self.__grid_resolution: int = int(config.get("grid_resolution", 350))
 
-        self.__movement_policy: MovementPolicyCfg = config.get("movement_policy", MovementPolicyCfg.TIME_STEP)
-        self.__time_step_seconds:Optional[int] = config.get("time_step_seconds", 180)
-        self.__num_steps:Optional[int] = config.get("num_steps", 10)
+        self.__movement_policy: MovementPolicyCfg = self.__coerce_movement_policy(
+            config.get("movement_policy", MovementPolicyCfg.TIME_STEP)
+        )
+        self.__time_step_seconds: Optional[int] = config.get("time_step_seconds", 180)
+        self.__num_steps: Optional[int] = config.get("num_steps", 10)
         self.__reference_speed: Optional[float] = config.get("reference_speed", 1.0)
 
         self.__dt_tolerance: Optional[float] = config.get("dt_tolerance", 2.0)
@@ -27,7 +27,16 @@ class ConfigDto(BaseModel):
         self.__hmm_states: Optional[int] = config.get("hmm_states", 3)
         self.__rnge: Optional[int] = config.get("rnge", 500)
 
-        self.__walk_model: Optional[int] = config.get("walk_model", 1) 
+        self.__walk_model: Optional[int] = int(config.get("walk_model", 1))
+
+    @staticmethod
+    def __coerce_movement_policy(value) -> MovementPolicyCfg:
+        if isinstance(value, MovementPolicyCfg):
+            return value
+        try:
+            return MovementPolicyCfg(value)
+        except ValueError:
+            return MovementPolicyCfg[str(value).upper()]
 
     @property
     def animal_type(self) -> Animal:
@@ -39,13 +48,28 @@ class ConfigDto(BaseModel):
             return Animal.MARINE
 
     @property
-    def water_mode(self) -> WaterMode:
-        if self.__water_mode == 0:
-            return WaterMode.FORBID
-        elif self.__water_mode == 1:
-            return WaterMode.AVOID
-        else:
-            return WaterMode.ALLOW
+    def barrier_mode(self) -> BarrierMode:
+        try:
+            return BarrierMode(self.__water_mode)
+        except ValueError:
+            return BarrierMode.AVOID
+
+    @property
+    def water_mode(self) -> BarrierMode:
+        return self.barrier_mode
+
+    @property
+    def barriers(self) -> list[MesaLandcover]:
+        if self.animal_type == Animal.AIRBORNE:
+            return []
+
+        if self.animal_type == Animal.MARINE:
+            return [MesaLandcover.TREE_COVER]
+
+        barriers = [MesaLandcover.BUILT_UP]
+        if self.barrier_mode != BarrierMode.ALLOW:
+            barriers.append(MesaLandcover.PERMANENT_WATER)
+        return barriers
 
     @property
     def cell_resolution(self) -> int:
@@ -95,3 +119,11 @@ class ConfigDto(BaseModel):
     @property
     def walk_model(self) -> Optional[int]:
         return self.__walk_model
+
+    @property
+    def is_brownian(self) -> bool:
+        if self.__walk_model == 1:
+            return True
+        if self.__walk_model == 2:
+            return False
+        return self.animal_type == Animal.TERRESTRIAL
