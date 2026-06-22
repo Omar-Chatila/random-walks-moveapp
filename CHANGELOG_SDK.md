@@ -16,3 +16,7 @@
 
 ## 2026-03-20 `v1.1.1`
 - resolve issues with flying animals with regard to S, T and kernel resampling
+
+## 2026-06-23 `v1.2.2`
+- update barrier handling
+- updated random walks core 

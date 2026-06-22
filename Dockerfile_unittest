@@ -27,8 +27,6 @@ RUN apt-get update && apt-get install -y \
 ENV CC=/usr/bin/gcc
 ENV CXX=/usr/bin/g++
 
-RUN git config --system url."https://github.com/".insteadOf "git@github.com:"
-
 RUN conda env create --prefix ${ENV_PREFIX}  --file environment.yml && \
     conda clean --all --yes
 

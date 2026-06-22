@@ -22,7 +22,6 @@ ENV UID=moveapps
 ENV GID=moveapps
 RUN addgroup --system $GID && adduser --system $UID --ingroup $GID
 RUN chown $UID:$GID $PROJECT_DIR
-RUN git config --system url."https://github.com/".insteadOf "git@github.com:"
 
 USER $UID:$GID
 WORKDIR $PROJECT_DIR
