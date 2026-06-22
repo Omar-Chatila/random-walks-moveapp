@@ -21,7 +21,7 @@
         "author",
         "creator"
       ],
-      "orcid": null,
+      "orcid": "https://orcid.org/0009-0000-4265-1037",
       "affiliation": "TU Dortmund",
       "affiliationRor": null
     },
@@ -80,26 +80,40 @@
       ]
     },
     {
-      "id": "water_mode",
-      "name": "Behaviour Towards Water (Terrestrial)",
-      "description": "Defines how water bodies are treated for TERRESTRIAL animals. Ignored for AIRBORNE and MARINE animals (water is treated like normal terrain).",
-      "defaultValue": 2,
-      "type": "RADIOBUTTONS",
-      "options": [
-        {
-          "value": 0,
-          "displayText": "Avoids water completely (cannot cross water bodies)"
-        },
-        {
-          "value": 1,
-          "displayText": "Avoids water whenever possible, but allows starting or isolated points in water"
-        },
-        {
-          "value": 2,
-          "displayText": "Water is treated like any other terrain (can cross)"
-        }
-      ]
+  "id": "water_barrier",
+  "name": "Treat Water as Barrier",
+  "description": "For TERRESTRIAL animals only. Water bodies are considered barriers according to the selected Barrier Mode. Ignored for MARINE animals (water is always traversable) and AIRBORNE animals (full reachability).",
+  "defaultValue": false,
+  "type": "CHECKBOX"
+},
+{
+  "id": "builtup_barrier",
+  "name": "Treat Built-up Areas as Barrier",
+  "description": "For TERRESTRIAL animals only. Built-up areas (e.g. buildings, roads, urban infrastructure) are considered barriers according to the selected Barrier Mode. Ignored for MARINE animals and AIRBORNE animals.",
+  "defaultValue": false,
+  "type": "CHECKBOX"
+},
+{
+  "id": "barrier_mode",
+  "name": "Barrier Handling Mode",
+  "description": "Defines how selected barriers are treated for TERRESTRIAL animals. 'Avoid' prefers routes around barriers but allows crossing if necessary. 'Forbid' completely prevents crossing selected barriers. 'Full Reachability' ignores all barrier settings. For MARINE animals, water is always traversable. For AIRBORNE animals, full reachability is assumed.",
+  "defaultValue": "AVOID",
+  "type": "RADIOBUTTONS",
+  "options": [
+    {
+      "value": "AVOID",
+      "displayText": "Avoid barriers whenever possible"
     },
+    {
+      "value": "FORBID",
+      "displayText": "Forbid crossing barriers"
+    },
+    {
+      "value": "FULL_REACHABILITY",
+      "displayText": "Ignore barriers (full reachability)"
+    }
+  ]
+},
     {
       "id": "cell_resolution",
       "name": "Upper Bound for Walk Unit Length (metres)",

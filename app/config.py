@@ -5,12 +5,21 @@ from randomwalks.core.MovementPolicy import FixedStepsPolicy, MovementPolicy, Sp
 
 from pydantic import BaseModel
 
-
 class ConfigDto(BaseModel):
     def __init__(self, config: dict):
         super().__init__()
+
         self.__animal_type: int = int(config.get("animal_type", 0))
-        self.__water_mode: int = int(config.get("water_mode", BarrierMode.AVOID))
+
+        self.__water_barrier: bool = bool(config.get("water_barrier", False))
+        self.__builtup_barrier: bool = bool(config.get("builtup_barrier", False))
+
+        try:
+            self.__barrier_mode: BarrierMode = BarrierMode(
+                config.get("barrier_mode", BarrierMode.AVOID)
+            )
+        except ValueError:
+            self.__barrier_mode = BarrierMode.AVOID
 
         self.__cell_resolution: int = int(config.get("cell_resolution", 50))
         self.__grid_resolution: int = int(config.get("grid_resolution", 350))
@@ -18,6 +27,7 @@ class ConfigDto(BaseModel):
         self.__movement_policy: MovementPolicyCfg = self.__coerce_movement_policy(
             config.get("movement_policy", MovementPolicyCfg.TIME_STEP)
         )
+
         self.__time_step_seconds: Optional[int] = config.get("time_step_seconds", 180)
         self.__num_steps: Optional[int] = config.get("num_steps", 10)
         self.__reference_speed: Optional[float] = config.get("reference_speed", 1.0)
@@ -49,10 +59,7 @@ class ConfigDto(BaseModel):
 
     @property
     def barrier_mode(self) -> BarrierMode:
-        try:
-            return BarrierMode(self.__water_mode)
-        except ValueError:
-            return BarrierMode.AVOID
+        return self.__barrier_mode
 
     @property
     def water_mode(self) -> BarrierMode:
@@ -62,12 +69,12 @@ class ConfigDto(BaseModel):
     def barriers(self) -> list[MesaLandcover]:
         if self.animal_type == Animal.AIRBORNE:
             return []
-
         if self.animal_type == Animal.MARINE:
-            return [MesaLandcover.TREE_COVER]
-
-        barriers = [MesaLandcover.BUILT_UP]
-        if self.barrier_mode != BarrierMode.ALLOW:
+            return []
+        barriers = []
+        if self.__builtup_barrier:
+            barriers.append(MesaLandcover.BUILT_UP)
+        if self.__water_barrier:
             barriers.append(MesaLandcover.PERMANENT_WATER)
         return barriers
 

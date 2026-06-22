@@ -1,6 +1,9 @@
 {
   "animal_type": 1,
-  "water_mode": 0,
+
+  "water_barrier": false,
+  "builtup_barrier": false,
+  "barrier_mode": "FULL_REACHABILITY",
 
   "cell_resolution": 5,
   "grid_resolution": 150,
