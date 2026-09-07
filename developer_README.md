@@ -39,6 +39,40 @@ Critical parts of the SDK can be adjusted by `environment variables`. Keep in mi
 You can adjust these environment variables by adjusting the file `./.env`.
 
 
+### Local SDK installation
+
+The development reference is the sibling checkout `../RW-Python-gitlab`,
+with sibling `kernelcma`, `environmentcma`, `hmmcma`, and `segmentationcma`
+repositories. After creating/updating the Conda environment, explicitly
+replace the Git-installed packages with these local sources:
+
+```bash
+conda activate moveapps-randomwalks-sdk
+bash scripts/install-local.sh
+python sdk.py
+```
+
+The installer forces a rebuild because different Random Walks revisions
+currently share version `0.2.2`. It uses the CPU backend for portability.
+It installs local CMA packages without resolving their Git URL dependencies,
+then runs `pip check`; the environment must already contain their third-party
+dependencies. An optional argument selects a different parent directory.
+
+`environment.yml` remains the hosted MoveApps installation using the `dev`
+branch. Updating it can replace local sources, so rerun the local installer
+afterwards. Hosted installs require publishing all necessary upstream source
+files, including currently untracked `StateKernelHelper.py`, `StateWalkGrid.py`,
+`StateWalkerConfig.py` and `kernelcma/configuration.py`, plus the native build
+fix in the `random-walks` submodule. A local installation includes these files;
+a Git installation cannot include them until they are committed and pushed.
+
+The app uses `annotate_behavior()` with HMM features `TURN_ANGLE` and `SPEED`,
+then `get_kernels(kernel_config=...)`, then `generate_walks()`. It continues
+to return interpolated trajectories; utilization-distribution generation is
+not enabled by this interface migration.
+
+
+
 ## MoveApps App Bundle
 
 Which files will be bundled into the final App running on MoveApps?

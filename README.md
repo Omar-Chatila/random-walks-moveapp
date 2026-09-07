@@ -60,7 +60,7 @@ For each trajectory:
 1. Movement features such as speed, turning angle, distance, and terrain are computed.
 2. A Hidden Markov Model is fitted to infer behavioural states.
 3. Behaviour-specific movement kernels are constructed using Gaussian-based correlated and Brownian walk models.
-4. Random walks are generated between consecutive observed locations using these kernels and a configurable movement policy.
+4. Random walks are generated between consecutive observed locations using these kernels and the adaptive kernel movement policy.
 5. Interpolated paths are merged with original observations into a continuous trajectory output.
 
 Generated trajectories preserve timestamps and produce temporally consistent paths that reflect inferred behaviour and environmental context.
@@ -114,7 +114,7 @@ The output contains the original points plus interpolated random-walk points bet
 `kernels.png`
 Plots of the kernels produced by the HMM and Gaussian Mixture Model.
 
-`trajectories_timed.html`
+`animated_trajectories.html`
 Leaflet visualization showing animated, time-aware random walk trajectories for each individual.
 
 
@@ -133,21 +133,10 @@ Maximum spatial unit length of individual walk steps. Controls spatial discretiz
 **Number of Grid-Cells Along the Longer Axis (`grid_resolution`)**
 Fallback grid resolution when two points are very far apart. Limits memory and runtime.
 
-**Movement Policy (`movement_policy`)**
-Defines how number of steps and step sizes are determined:
-
-* **Fixed time step**: step sizes are calculated using distance and calculated number of steps from the fixed rate in seconds
-* **Fixed number of** steps: step sizes are calculated using distance and fixed number of steps
-* **Automatic based on** reference speed: Uses reference speed and Euclidean Distance to calculate step sizes and number of steps 
-
-**Time Step (seconds) (`time_step_seconds`)**
-Used when movement policy = fixed time step.
-
-**Number of Steps (`num_steps`)**
-Used when movement policy = fixed number of steps.
-
-**Reference Speed (m/s) (`reference_speed`)**
-Used for automatic step calculation when policy = auto speed.
+Movement always uses `AdaptiveKernelMovementPolicy`. The inferred kernel
+interval determines timing; correlated kernels retain their native interval.
+The old movement policy, time step, step count and reference speed settings
+are no longer used.
 
 **Delta-T Tolerance Factor (`dt_tolerance`)**
 Controls grouping of observations into continuous trajectory segments for kernel estimation.
@@ -155,8 +144,11 @@ Controls grouping of observations into continuous trajectory segments for kernel
 **Maximal Number of HMM States (`hmm_states`)**
 Number of behavioural states used in HMM. Should be lower for few locations. Values: 2–4.
 
-**HMM-Kernels Range (`rnge`)**
-Spatial kernel radius (m) used for transition matrices.
+
+**Brownian Kernel Time Factor (`brownian_time_factor`)**
+Brownian only. Positive divisor of the native interval: `1` keeps it,
+`2` halves it. Correlated kernels ignore this setting. Both models always
+use the adaptive movement policy.
 
 **Random Walk Motion Model (`walk_model`)**
 Choice of motion model:

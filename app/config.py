@@ -1,136 +1,79 @@
-from typing import Optional
+from math import isfinite
 
-from randomwalks.bindings.data_structures.Terrain import Animal, BarrierMode, MesaLandcover, MovementPolicyCfg
-from randomwalks.core.MovementPolicy import FixedStepsPolicy, MovementPolicy, SpeedBasedPolicy, TimeStepPolicy
+from kernelcma import KernelConfig, KernelKind
+from randomwalks import AdaptiveKernelMovementPolicy, Animal, BarrierMode, MesaLandcover
 
-from pydantic import BaseModel
 
-class ConfigDto(BaseModel):
+class ConfigDto:
+    """MoveApps settings mapped to the current state-dependent walker API."""
+
     def __init__(self, config: dict):
-        super().__init__()
-
-        self.__animal_type: int = int(config.get("animal_type", 0))
-
-        self.__water_barrier: bool = bool(config.get("water_barrier", False))
-        self.__builtup_barrier: bool = bool(config.get("builtup_barrier", False))
-
-        try:
-            self.__barrier_mode: BarrierMode = BarrierMode(
-                config.get("barrier_mode", BarrierMode.AVOID)
-            )
-        except ValueError:
-            self.__barrier_mode = BarrierMode.AVOID
-
-        self.__cell_resolution: int = int(config.get("cell_resolution", 50))
-        self.__grid_resolution: int = int(config.get("grid_resolution", 350))
-
-        self.__movement_policy: MovementPolicyCfg = self.__coerce_movement_policy(
-            config.get("movement_policy", MovementPolicyCfg.TIME_STEP)
+        self.animal_type = {0: Animal.AIRBORNE, 1: Animal.TERRESTRIAL, 2: Animal.MARINE}[
+            int(config.get("animal_type", 1))
+        ]
+        mode = config.get("barrier_mode", "AVOID")
+        # MoveApps keeps its existing setting value; the library calls it ALLOW.
+        self.barrier_mode = (
+            BarrierMode.ALLOW if mode == "FULL_REACHABILITY"
+            else BarrierMode[mode] if isinstance(mode, str)
+            else BarrierMode(mode)
         )
+        self.barriers = []
+        if self.animal_type == Animal.TERRESTRIAL:
+            if config.get("water_barrier", False):
+                self.barriers.append(MesaLandcover.PERMANENT_WATER)
+            if config.get("builtup_barrier", False):
+                self.barriers.append(MesaLandcover.BUILT_UP)
+        elif self.animal_type == Animal.MARINE:
+            # Let the walker select its marine land barrier and default mode.
+            self.barriers = None
+            self.barrier_mode = None
+        else:
+            self.barrier_mode = BarrierMode.ALLOW
 
-        self.__time_step_seconds: Optional[int] = config.get("time_step_seconds", 180)
-        self.__num_steps: Optional[int] = config.get("num_steps", 10)
-        self.__reference_speed: Optional[float] = config.get("reference_speed", 1.0)
+        self.cell_resolution = self._positive(config.get("cell_resolution", 50), "cell_resolution")
+        self.grid_resolution = self._integer(config.get("grid_resolution", 500), "grid_resolution")
+        self.hmm_states = self._integer(config.get("hmm_states", 3), "hmm_states")
+        self.dt_tolerance = self._positive(config.get("dt_tolerance", 2.0), "dt_tolerance")
+        self.walk_model = int(config.get("walk_model", 1))
+        if self.walk_model not in (1, 2, 3):
+            raise ValueError("walk_model must be 1, 2, or 3.")
+        self.is_brownian = self.walk_model == 1 or (
+            self.walk_model == 3 and self.animal_type == Animal.TERRESTRIAL
+        )
+        kernel_options = {
+            "kind": KernelKind.BROWNIAN if self.is_brownian else KernelKind.CORRELATED,
+            "dt_tolerance": self.dt_tolerance,
+            "range_m": None,
+            "mass_percentile": 99,
+        }
+        if self.is_brownian:
+            kernel_options["time_factor"] = self._positive(
+                config.get("brownian_time_factor", 1), "brownian_time_factor"
+            )
+        self.kernel_config = KernelConfig(**kernel_options)
 
-        self.__dt_tolerance: Optional[float] = config.get("dt_tolerance", 2.0)
-
-        self.__hmm_states: Optional[int] = config.get("hmm_states", 3)
-        self.__rnge: Optional[int] = config.get("rnge", 500)
-
-        self.__walk_model: Optional[int] = int(config.get("walk_model", 1))
+    @property
+    def movement_policy(self):
+        return AdaptiveKernelMovementPolicy()
 
     @staticmethod
-    def __coerce_movement_policy(value) -> MovementPolicyCfg:
-        if isinstance(value, MovementPolicyCfg):
-            return value
-        try:
-            return MovementPolicyCfg(value)
-        except ValueError:
-            return MovementPolicyCfg[str(value).upper()]
+    def _positive(value, name):
+        number = float(value)
+        if not isfinite(number) or number <= 0:
+            raise ValueError(f"{name} must be finite and positive.")
+        return number
 
-    @property
-    def animal_type(self) -> Animal:
-        if self.__animal_type == 0:
-            return Animal.AIRBORNE
-        elif self.__animal_type == 1:
-            return Animal.TERRESTRIAL
-        else:
-            return Animal.MARINE
+    @classmethod
+    def _integer(cls, value, name):
+        number = cls._positive(value, name)
+        if not number.is_integer():
+            raise ValueError(f"{name} must be an integer.")
+        return int(number)
 
-    @property
-    def barrier_mode(self) -> BarrierMode:
-        return self.__barrier_mode
-
-    @property
-    def water_mode(self) -> BarrierMode:
-        return self.barrier_mode
-
-    @property
-    def barriers(self) -> list[MesaLandcover]:
-        if self.animal_type == Animal.AIRBORNE:
-            return []
-        if self.animal_type == Animal.MARINE:
-            return []
-        barriers = []
-        if self.__builtup_barrier:
-            barriers.append(MesaLandcover.BUILT_UP)
-        if self.__water_barrier:
-            barriers.append(MesaLandcover.PERMANENT_WATER)
-        return barriers
-
-    @property
-    def cell_resolution(self) -> int:
-        return self.__cell_resolution
-
-    @property
-    def grid_resolution(self) -> int:
-        return self.__grid_resolution
-
-    @property
-    def movement_policy(self) -> MovementPolicy:
-        mvm_pol = TimeStepPolicy(self.time_step_seconds)
-        if self.__movement_policy == MovementPolicyCfg.TIME_STEP:
-            mvm_pol = TimeStepPolicy(self.time_step_seconds)
-        elif self.__movement_policy == MovementPolicyCfg.FIXED_STEPS:
-            mvm_pol = FixedStepsPolicy(self.num_steps)
-        else:
-            mvm_pol = SpeedBasedPolicy(self.time_step_seconds,
-                                       self.reference_speed,
-                                       self.grid_resolution)
-        return mvm_pol
-
-    @property
-    def time_step_seconds(self) -> Optional[int]:
-        return self.__time_step_seconds
-
-    @property
-    def num_steps(self) -> Optional[int]:
-        return self.__num_steps
-
-    @property
-    def reference_speed(self) -> Optional[float]:
-        return self.__reference_speed
-
-    @property
-    def dt_tolerance(self) -> Optional[float]:
-        return self.__dt_tolerance
-    
-    @property
-    def hmm_states(self) -> Optional[int]:
-        return self.__hmm_states
-    
-    @property
-    def rnge(self) -> Optional[int]:
-        return self.__rnge
-    
-    @property
-    def walk_model(self) -> Optional[int]:
-        return self.__walk_model
-
-    @property
-    def is_brownian(self) -> bool:
-        if self.__walk_model == 1:
-            return True
-        if self.__walk_model == 2:
-            return False
-        return self.animal_type == Animal.TERRESTRIAL
+    @staticmethod
+    def _probability(value, name):
+        number = float(value)
+        if not isfinite(number) or not 0 < number < 1:
+            raise ValueError(f"{name} must be between 0 and 1 (exclusive).")
+        return number

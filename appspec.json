@@ -6,7 +6,6 @@
   "documentation": {
     "url": "https://github.com/Omar-Chatila/random-walks-moveapp/blob/main/README.md"
   },
-  
   "reference": {
     "url": "https://dl.acm.org/doi/10.1145/3678717.3691231"
   },
@@ -80,40 +79,40 @@
       ]
     },
     {
-  "id": "water_barrier",
-  "name": "Treat Water as Barrier",
-  "description": "For TERRESTRIAL animals only. Water bodies are considered barriers according to the selected Barrier Mode. Ignored for MARINE animals (water is always traversable) and AIRBORNE animals (full reachability).",
-  "defaultValue": false,
-  "type": "CHECKBOX"
-},
-{
-  "id": "builtup_barrier",
-  "name": "Treat Built-up Areas as Barrier",
-  "description": "For TERRESTRIAL animals only. Built-up areas (e.g. buildings, roads, urban infrastructure) are considered barriers according to the selected Barrier Mode. Ignored for MARINE animals and AIRBORNE animals.",
-  "defaultValue": false,
-  "type": "CHECKBOX"
-},
-{
-  "id": "barrier_mode",
-  "name": "Barrier Handling Mode",
-  "description": "Defines how selected barriers are treated for TERRESTRIAL animals. 'Avoid' prefers routes around barriers but allows crossing if necessary. 'Forbid' completely prevents crossing selected barriers. 'Full Reachability' ignores all barrier settings. For MARINE animals, water is always traversable. For AIRBORNE animals, full reachability is assumed.",
-  "defaultValue": "AVOID",
-  "type": "RADIOBUTTONS",
-  "options": [
-    {
-      "value": "AVOID",
-      "displayText": "Avoid barriers whenever possible"
+      "id": "water_barrier",
+      "name": "Treat Water as Barrier",
+      "description": "For TERRESTRIAL animals only. Water bodies are considered barriers according to the selected Barrier Mode. Ignored for MARINE animals (water is always traversable) and AIRBORNE animals (full reachability).",
+      "defaultValue": false,
+      "type": "CHECKBOX"
     },
     {
-      "value": "FORBID",
-      "displayText": "Forbid crossing barriers"
+      "id": "builtup_barrier",
+      "name": "Treat Built-up Areas as Barrier",
+      "description": "For TERRESTRIAL animals only. Built-up areas (e.g. buildings, roads, urban infrastructure) are considered barriers according to the selected Barrier Mode. Ignored for MARINE animals and AIRBORNE animals.",
+      "defaultValue": false,
+      "type": "CHECKBOX"
     },
     {
-      "value": "FULL_REACHABILITY",
-      "displayText": "Ignore barriers (full reachability)"
-    }
-  ]
-},
+      "id": "barrier_mode",
+      "name": "Barrier Handling Mode",
+      "description": "Defines how selected barriers are treated for TERRESTRIAL animals. 'Avoid' prefers routes around barriers but allows crossing if necessary. 'Forbid' completely prevents crossing selected barriers. 'Full Reachability' ignores all barrier settings. For MARINE animals, water is always traversable. For AIRBORNE animals, full reachability is assumed.",
+      "defaultValue": "AVOID",
+      "type": "RADIOBUTTONS",
+      "options": [
+        {
+          "value": "AVOID",
+          "displayText": "Avoid barriers whenever possible"
+        },
+        {
+          "value": "FORBID",
+          "displayText": "Forbid crossing barriers"
+        },
+        {
+          "value": "FULL_REACHABILITY",
+          "displayText": "Ignore barriers (full reachability)"
+        }
+      ]
+    },
     {
       "id": "cell_resolution",
       "name": "Upper Bound for Walk Unit Length (metres)",
@@ -129,51 +128,9 @@
       "type": "INTEGER"
     },
     {
-      "id": "movement_policy",
-      "name": "Movement Policy",
-      "description": "Defines how the number of steps and step timing are determined.",
-      "defaultValue": "TIME_STEP",
-      "type": "RADIOBUTTONS",
-      "options": [
-        {
-          "value": "TIME_STEP",
-          "displayText": "Fixed time step"
-        },
-        {
-          "value": "FIXED_STEPS",
-          "displayText": "Fixed number of steps"
-        },
-        {
-          "value": "AUTO_SPEED",
-          "displayText": "Automatic (based on reference speed)"
-        }
-      ]
-    },
-    {
-      "id": "time_step_seconds",
-      "name": "Time Step (seconds)",
-      "description": "Time difference between consecutive steps. Only used if Movement Policy is set to 'Fixed time step'.",
-      "defaultValue": 180,
-      "type": "INTEGER"
-    },
-    {
-      "id": "num_steps",
-      "name": "Number of Steps",
-      "description": "Total number of steps generated per trajectory. Only used if Movement Policy is set to 'Fixed number of steps'.",
-      "defaultValue": 10,
-      "type": "INTEGER"
-    },
-    {
-      "id": "reference_speed",
-      "name": "Reference Speed (m/s)",
-      "description": "Typical movement speed of the animal used to automatically determine step count and timing. Only used if Movement Policy is set to 'Automatic (based on reference speed)'.",
-      "defaultValue": 1,
-      "type": "DOUBLE"
-    },
-    {
       "id": "dt_tolerance",
       "name": "Delta-T Tolerance Factor",
-      "description": "Threshold to decide whether two records belong to the same trajectory. A value of 2.0 allows deviations up to twice the median Δt.",
+      "description": "Threshold to decide whether two records belong to the same trajectory. A value of 2.0 allows deviations up to twice the median \u0394t.",
       "defaultValue": 2,
       "type": "DOUBLE"
     },
@@ -199,13 +156,6 @@
       ]
     },
     {
-      "id": "rnge",
-      "name": "HMM-Kernels Range",
-      "description": "Transition matrices are generated with dimensions [-range, range] x [-range, range]",
-      "defaultValue": 300,
-      "type": "INTEGER"
-    },
-    {
       "id": "walk_model",
       "name": "Random Walk Motion Model (Temporary Option)",
       "description": "Third option has default settings: Correlated for Aearial and Marine, Brownian for Terrestrial.",
@@ -219,12 +169,15 @@
         {
           "value": 2,
           "displayText": "Correlated"
-        },
-        {
-          "value": 3,
-          "displayText": "Animal Type Dependent"
         }
       ]
+    },
+    {
+      "id": "brownian_time_factor",
+      "name": "Brownian Kernel Time Factor",
+      "description": "Brownian only. Divides the inferred native sampling interval: 1 keeps it, 2 halves it. Must be positive. Ignored for correlated kernels, which use their native interval.",
+      "defaultValue": 1,
+      "type": "DOUBLE"
     }
   ]
 }
