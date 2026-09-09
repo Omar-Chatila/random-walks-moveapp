@@ -17,6 +17,7 @@ dependencies:
   - qt-main
   - pyqt6
   - compilers
+  - binutils
   - cmake
   - pluggy
   - python-dotenv
